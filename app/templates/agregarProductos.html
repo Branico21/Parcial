@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agregar Productos Agrícolas</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(135deg, #28a745, #218838);
+        }
+        .container {
+            width: 100%;
+            max-width: 500px;
+            background: #fff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+        h2 {
+            margin-bottom: 20px;
+            color: #28a745;
+            font-size: 24px;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        label {
+            text-align: left;
+            font-weight: bold;
+            color: #333;
+        }
+        input, textarea {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: #28a745;
+            box-shadow: 0 0 5px rgba(40, 167, 69, 0.5);
+        }
+        textarea {
+            resize: vertical;
+        }
+        button {
+            padding: 10px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+        button:hover {
+            background-color: #218838;
+            transform: scale(1.05);
+        }
+        .logout-btn {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+        .logout-btn:hover {
+            background-color: #c82333;
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Agregar Productos Agrícolas</h2>
+        <form id="addProductForm" enctype="multipart/form-data">
+            <label for="productName">Nombre del Producto:</label>
+            <input type="text" id="productName" name="productName" placeholder="Ej. Tomates" required>
+            
+            <label for="productDescription">Descripción:</label>
+            <textarea id="productDescription" name="productDescription" rows="4" placeholder="Describe el producto..." required></textarea>
+            
+            <label for="productPrice">Precio (por unidad o kg):</label>
+            <input type="number" id="productPrice" name="productPrice" placeholder="Ej. 50" required>
+            
+            <label for="productQuantity">Cantidad Disponible:</label>
+            <input type="number" id="productQuantity" name="productQuantity" placeholder="Ej. 100" required>
+            
+            <label for="productImage">Imagen del Producto:</label>
+            <input type="file" id="productImage" name="productImage" accept="image/*" required>
+            
+            <button type="submit">Agregar Producto</button>
+        </form>
+        <!-- Botón de cerrar sesión -->
+        <button class="logout-btn" onclick="logout()">Cerrar Sesión</button>
+    </div>
+    <script>
+        const addProductForm = document.getElementById('addProductForm');
+        addProductForm.addEventListener('submit', async (event) => {
+            event.preventDefault(); // Evitar el envío predeterminado del formulario
+
+            // Crear un objeto FormData para manejar los datos del formulario
+            const formData = new FormData(addProductForm);
+
+            try {
+                // Enviar los datos al backend
+                const response = await fetch('/add-product', {
+                    method: 'POST',
+                    body: formData,
+                });
+
+                // Manejar la respuesta del servidor
+                const result = await response.json();
+                if (response.ok) {
+                    alert(result.message); // Mostrar mensaje de éxito
+                    window.location.reload(); // Recargar la página para actualizar la lista de productos
+                } else {
+                    alert(result.message); // Mostrar mensaje de error
+                }
+            } catch (error) {
+                console.error('Error al agregar el producto:', error);
+                alert('Ocurrió un error al intentar agregar el producto.');
+            }
+        });
+
+        // Función para cerrar sesión
+        function logout() {
+            // Redirigir al usuario a la página de inicio de sesión
+            window.location.href = "/";
+        }
+    </script>
+</body>
+</html>

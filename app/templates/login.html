@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inicio de Sesión</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(135deg, #28a745, #218838);
+        }
+        .container {
+            width: 100%;
+            max-width: 400px;
+            background: #fff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+        h2 {
+            margin-bottom: 20px;
+            color: #28a745;
+            font-size: 24px;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        label {
+            text-align: left;
+            font-weight: bold;
+            color: #333;
+        }
+        input {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+        button {
+            padding: 10px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        .link {
+            margin-top: 15px;
+            font-size: 14px;
+        }
+        .link a {
+            color: #28a745;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .link a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Inicio de Sesión</h2>
+        <form id="loginForm">
+            <label for="loginEmail">Correo Electrónico:</label>
+            <input type="email" id="loginEmail" name="loginEmail" placeholder="Ingresa tu correo" required>
+            
+            <label for="loginPassword">Contraseña:</label>
+            <input type="password" id="loginPassword" name="loginPassword" placeholder="Ingresa tu contraseña" required>
+            
+            <button type="submit">Iniciar Sesión</button>
+        </form>
+        <div class="link">
+            <p>¿No tienes una cuenta? <a href="/registro">Regístrate aquí</a></p>
+        </div>
+    </div>
+    <script>
+        // Capturar el formulario y enviar los datos en formato JSON
+        const loginForm = document.getElementById('loginForm');
+        loginForm.addEventListener('submit', async (event) => {
+            event.preventDefault(); // Evitar el envío predeterminado del formulario
+    
+            // Obtener los datos del formulario
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+    
+            try {
+                // Enviar los datos al backend en formato JSON
+                const response = await fetch('/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ email, password }),
+                });
+    
+                // Manejar la respuesta del servidor
+                const result = await response.json();
+                if (response.ok) {
+                    alert(result.message); // Mostrar mensaje de éxito
+                    window.location.href = result.redirect_url; // Redirigir según el rol
+                } else {
+                    alert(result.message); // Mostrar mensaje de error
+                }
+            } catch (error) {
+                console.error('Error al iniciar sesión:', error);
+                alert('Ocurrió un error al intentar iniciar sesión.');
+            }
+        });
+    </script>
+</body>
+</html>

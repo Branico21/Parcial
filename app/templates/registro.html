@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro de Usuario</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(135deg, #28a745, #218838);
+        }
+        .container {
+            width: 100%;
+            max-width: 400px;
+            background: #fff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+        h2 {
+            margin-bottom: 20px;
+            color: #28a745;
+            font-size: 24px;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        label {
+            text-align: left;
+            font-weight: bold;
+            color: #333;
+        }
+        input, select {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+        button {
+            padding: 10px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        .link {
+            margin-top: 15px;
+            font-size: 14px;
+        }
+        .link a {
+            color: #28a745;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .link a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Registro de Usuario</h2>
+        <form id="registerForm">
+            <label for="registerName">Nombre Completo:</label>
+            <input type="text" id="registerName" name="registerName" placeholder="Ingresa tu nombre completo" required>
+            
+            <label for="registerEmail">Correo Electrónico:</label>
+            <input type="email" id="registerEmail" name="registerEmail" placeholder="Ingresa tu correo electrónico" required>
+            
+            <label for="registerPassword">Contraseña:</label>
+            <input type="password" id="registerPassword" name="registerPassword" placeholder="Crea una contraseña" required>
+            
+            <label for="role">Selecciona tu Rol:</label>
+            <select id="role" name="role" required>
+                <option value="" disabled selected>Selecciona una opción</option>
+                <option value="comprador">Comprador</option>
+                <option value="vendedor">Vendedor</option>
+            </select>
+            
+            <button type="submit">Registrarse</button>
+        </form>
+        <div class="link">
+            <p>¿Ya tienes una cuenta? <a href="/">Inicia sesión aquí</a></p>
+        </div>
+    </div>
+    <script>
+        // Capturar el formulario y enviar los datos en formato JSON
+        const registerForm = document.getElementById('registerForm');
+        registerForm.addEventListener('submit', async (event) => {
+            event.preventDefault(); // Evitar el envío predeterminado del formulario
+    
+            // Obtener los datos del formulario
+            const username = document.getElementById('registerName').value;
+            const email = document.getElementById('registerEmail').value;
+            const password = document.getElementById('registerPassword').value;
+            const role = document.getElementById('role').value;
+    
+            try {
+                // Enviar los datos al backend en formato JSON
+                const response = await fetch('/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ username, email, password, role }),
+                });
+    
+                // Manejar la respuesta del servidor
+                const result = await response.json();
+                if (response.ok) {
+                    alert(result.message); // Mostrar mensaje de éxito
+                    window.location.href = result.redirect_url; // Redirigir al inicio de sesión
+                } else {
+                    alert(result.message); // Mostrar mensaje de error
+                }
+            } catch (error) {
+                console.error('Error al registrar el usuario:', error);
+                alert('Ocurrió un error al intentar registrar el usuario.');
+            }
+        });
+    </script>
+</body>
+</html>
